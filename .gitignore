@@ -1,0 +1,22 @@
+# Maven build output
+target/
+*.log
+
+# H2 database files
+data/
+
+# User uploaded images
+src/main/webapp/uploads/
+src/main/webappuploads/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db

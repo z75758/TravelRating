@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 /**
- * Handles comment submission.
+ * Handles comment submission and deletion.
  */
 @WebServlet("/comment")
 public class CommentServlet extends HttpServlet {
@@ -26,6 +26,17 @@ public class CommentServlet extends HttpServlet {
             return;
         }
 
+        String action = req.getParameter("action");
+
+        if ("delete".equals(action)) {
+            handleDelete(req, resp, user);
+        } else {
+            handleAdd(req, resp, user);
+        }
+    }
+
+    private void handleAdd(HttpServletRequest req, HttpServletResponse resp, User user)
+            throws IOException {
         int destinationId = Integer.parseInt(req.getParameter("destinationId"));
         String content = req.getParameter("content");
         int rating = 5;
@@ -34,9 +45,23 @@ public class CommentServlet extends HttpServlet {
         } catch (NumberFormatException ignored) {}
 
         if (commentService.addComment(destinationId, user.getId(), content, rating)) {
-            session.setAttribute("success", "Comment posted.");
+            req.getSession().setAttribute("success", "Comment posted.");
         } else {
-            session.setAttribute("error", "Comment cannot be empty.");
+            req.getSession().setAttribute("error", "Comment cannot be empty.");
+        }
+        resp.sendRedirect(req.getContextPath() + "/destination/detail.jsp?id=" + destinationId);
+    }
+
+    private void handleDelete(HttpServletRequest req, HttpServletResponse resp, User user)
+            throws IOException {
+        int commentId = Integer.parseInt(req.getParameter("commentId"));
+        int destinationId = Integer.parseInt(req.getParameter("destinationId"));
+
+        String error = commentService.deleteComment(commentId, user.getId(), user.isAdmin());
+        if (error != null) {
+            req.getSession().setAttribute("error", error);
+        } else {
+            req.getSession().setAttribute("success", "评论已删除。");
         }
         resp.sendRedirect(req.getContextPath() + "/destination/detail.jsp?id=" + destinationId);
     }

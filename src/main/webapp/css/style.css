@@ -1101,3 +1101,21 @@ select.form-input {
     font-size: 24px;
   }
 }
+
+/* ---------- Comment Delete Button ---------- */
+.comment-delete-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #BBB;
+  cursor: pointer;
+  padding: 0 6px;
+  line-height: 1;
+  transition: color 0.15s, transform 0.15s;
+  border-radius: var(--radius-sm);
+}
+.comment-delete-btn:hover {
+  color: #E53E3E;
+  transform: scale(1.2);
+  background: #FFF5F5;
+}

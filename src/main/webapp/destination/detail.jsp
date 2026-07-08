@@ -179,15 +179,26 @@
                     </div>
                 <% } else { %>
                     <% for (Comment c : comments) { %>
-                    <div class="comment-item reveal">
+                    <div class="comment-item reveal" id="comment-<%= c.getId() %>">
                         <div class="comment-header">
                             <span class="comment-avatar"><%= c.getInitial() %></span>
-                            <div>
+                            <div style="flex:1;">
                                 <div class="comment-author"><%= c.getUsername() != null ? c.getUsername() : "User" %></div>
                                 <div class="comment-time">
                                     <%= c.getCreatedAt() != null ? c.getCreatedAt().toString().substring(0, 10) : "" %>
                                 </div>
                             </div>
+                            <%-- Delete button: visible to comment author or admin --%>
+                            <% if (detailCurrentUser != null &&
+                                  (detailCurrentUser.isAdmin() || detailCurrentUser.getId() == c.getUserId())) { %>
+                            <form action="<%=contextPath%>/comment" method="post"
+                                  onsubmit="return confirm('确定要删除这条评论吗？');" style="margin:0;">
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="commentId" value="<%= c.getId() %>">
+                                <input type="hidden" name="destinationId" value="<%= destId %>">
+                                <button type="submit" class="comment-delete-btn" title="删除评论" aria-label="删除评论">&times;</button>
+                            </form>
+                            <% } %>
                         </div>
                         <div class="comment-body"><%= c.getContent() %></div>
                     </div>

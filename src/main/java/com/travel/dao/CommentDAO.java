@@ -47,6 +47,22 @@ public class CommentDAO {
         return false;
     }
 
+    public Comment findById(int id) {
+        String sql = "SELECT c.*, u.username FROM comments c "
+                   + "JOIN users u ON c.user_id = u.id "
+                   + "WHERE c.id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) return mapRow(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean delete(int id) {
         String sql = "DELETE FROM comments WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();

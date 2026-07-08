@@ -32,8 +32,20 @@ public class CommentService {
         return commentDAO.create(c);
     }
 
-    public boolean deleteComment(int id) {
-        return commentDAO.delete(id);
+    /**
+     * Delete a comment. Only the comment author or an admin can delete.
+     * @return error message, or null if success
+     */
+    public String deleteComment(int commentId, int userId, boolean isAdmin) {
+        Comment comment = commentDAO.findById(commentId);
+        if (comment == null) {
+            return "评论不存在。";
+        }
+        if (!isAdmin && comment.getUserId() != userId) {
+            return "你只能删除自己的评论。";
+        }
+        commentDAO.delete(commentId);
+        return null;
     }
 
     public int getCommentCount() {

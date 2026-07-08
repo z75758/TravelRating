@@ -976,3 +976,128 @@ select.form-input {
 .hidden { display: none; }
 .w-full { width: 100%; }
 .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ══════════════════════════════════════════════════════════
+   Star Rating Widget
+   ══════════════════════════════════════════════════════════ */
+.rating-section {
+  margin: var(--space-4) 0;
+}
+.rating-overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.rating-stars-large {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.rating-number {
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1;
+}
+.stars-display {
+  display: flex;
+  gap: 2px;
+}
+.star-display {
+  font-size: var(--text-xl);
+  color: #DDD;
+  transition: color 0.2s;
+}
+.star-display.filled {
+  color: #e6a817;
+}
+.rating-count {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+/* Interactive star buttons */
+.rating-interactive {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.rating-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+.stars-interactive {
+  display: flex;
+  gap: 4px;
+}
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  color: #DDD;
+  padding: 0 2px;
+  transition: color 0.15s, transform 0.15s;
+  line-height: 1;
+}
+.star-btn:hover {
+  transform: scale(1.15);
+  color: #e6a817;
+}
+.star-btn.active {
+  color: #e6a817;
+}
+.rating-hint {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  transition: color 0.2s;
+}
+.rating-login-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+.rating-login-hint a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #111;
+  color: #fff;
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-sm);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-8px);
+}
+
+/* Comment form */
+.comment-form {
+  background: var(--color-canvas);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+}
+
+@media (max-width: 768px) {
+  .rating-stars-large {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .star-btn {
+    font-size: 24px;
+  }
+}

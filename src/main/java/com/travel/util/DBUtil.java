@@ -105,13 +105,13 @@ public class DBUtil {
                 ")"
             );
 
-            // Votes table
+            // Votes table (star rating: 1-5 score per user per destination)
             stmt.execute(
                 "CREATE TABLE votes (" +
                 "  id INT AUTO_INCREMENT PRIMARY KEY," +
                 "  destination_id INT NOT NULL," +
                 "  user_id INT NOT NULL," +
-                "  vote_type VARCHAR(20) DEFAULT 'like'," +
+                "  score INT DEFAULT 0," +
                 "  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                 "  UNIQUE (destination_id, user_id)," +
                 "  FOREIGN KEY (destination_id) REFERENCES destinations(id) ON DELETE CASCADE," +

@@ -188,7 +188,7 @@ public class DestinationDAO {
 
     public void updateRating(int destinationId) {
         String sql = "UPDATE destinations d SET d.rating = "
-                   + "(SELECT COALESCE(AVG(c.rating), 0) FROM comments c WHERE c.destination_id = ?) "
+                   + "(SELECT COALESCE(AVG(v.score), 0) FROM votes v WHERE v.destination_id = ?) "
                    + "WHERE d.id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

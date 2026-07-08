@@ -11,7 +11,6 @@ import java.util.List;
 public class CommentService {
 
     private final CommentDAO commentDAO = new CommentDAO();
-    private final DestinationService destinationService = new DestinationService();
 
     public List<Comment> getByDestination(int destinationId) {
         return commentDAO.findByDestinationId(destinationId);
@@ -30,11 +29,7 @@ public class CommentService {
         c.setContent(content.trim());
         c.setRating(rating);
 
-        boolean result = commentDAO.create(c);
-        if (result) {
-            destinationService.refreshRating(destinationId);
-        }
-        return result;
+        return commentDAO.create(c);
     }
 
     public boolean deleteComment(int id) {

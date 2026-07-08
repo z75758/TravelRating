@@ -18,5 +18,24 @@
         <session-timeout>30</session-timeout>
     </session-config>
 
+    <!-- ★ Filter ordering: EncodingFilter MUST run before AuthFilter ★ -->
+    <filter>
+        <filter-name>EncodingFilter</filter-name>
+        <filter-class>com.travel.filter.EncodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>EncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>AuthFilter</filter-name>
+        <filter-class>com.travel.filter.AuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>AuthFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!-- Error pages (disabled for embedded Tomcat compatibility) -->
 </web-app>

@@ -1,15 +1,14 @@
 package com.travel.filter;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
  * Sets UTF-8 encoding for all requests and responses.
+ * Filter order is configured in web.xml (must run before AuthFilter).
  */
-@WebFilter("/*")
 public class EncodingFilter implements Filter {
 
     @Override

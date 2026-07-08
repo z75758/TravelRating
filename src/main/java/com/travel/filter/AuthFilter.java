@@ -3,7 +3,6 @@ package com.travel.filter;
 import com.travel.model.User;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -12,8 +11,8 @@ import java.io.IOException;
 /**
  * Authentication filter.
  * Redirects unauthenticated users to login page for protected paths.
+ * Filter order is configured in web.xml (runs after EncodingFilter).
  */
-@WebFilter("/*")
 public class AuthFilter implements Filter {
 
     @Override

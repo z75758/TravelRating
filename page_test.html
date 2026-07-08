@@ -1,46 +1,62 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ page import="com.travel.model.Destination" %>
-<%@ page import="com.travel.model.Comment" %>
-<%@ page import="com.travel.model.User" %>
-<%@ page import="com.travel.service.DestinationService" %>
-<%@ page import="com.travel.service.CommentService" %>
-<%@ page import="com.travel.service.VoteService" %>
-<%@ page import="java.util.List" %>
-<%
-    // Get current user from session (before header.jsp include)
-    User detailCurrentUser = (User) session.getAttribute("user");
 
-    String idParam = request.getParameter("id");
-    if (idParam == null) {
-        response.sendRedirect(request.getContextPath() + "/destination/list.jsp");
-        return;
-    }
-    int destId = Integer.parseInt(idParam);
-    DestinationService ds = new DestinationService();
-    CommentService cs = new CommentService();
-    VoteService vs = new VoteService();
 
-    Destination destination = ds.getById(destId);
-    if (destination == null) {
-        response.sendRedirect(request.getContextPath() + "/destination/list.jsp");
-        return;
-    }
-    ds.incrementPopularity(destId);
 
-    List<Comment> comments = cs.getByDestination(destId);
-    int voteCount = vs.getVoteCount(destId);
-    double avgRating = vs.getAverageScore(destId);
-    boolean hasVoted = (detailCurrentUser != null) && vs.hasVoted(detailCurrentUser.getId(), destId);
-    int userScore = hasVoted ? vs.getUserScore(detailCurrentUser.getId(), destId) : 0;
-%>
-<%@ include file="../header.jsp" %>
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelVote - Discover & Rate Destinations</title>
+    <link rel="stylesheet" href="/TravelRating/css/taste-tokens.css">
+    <link rel="stylesheet" href="/TravelRating/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar - Taste-Skill: 64px height, 1px border-bottom -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/TravelRating/" class="navbar-brand">
+                <span class="brand-icon">&#9830;</span>
+                TravelVote
+            </a>
+            <ul class="navbar-links">
+                <li><a href="/TravelRating/destination/list.jsp">Destinations</a></li>
+                
+                    
+                    <li class="navbar-user">
+                        <a href="/TravelRating/user/profile.jsp" class="flex items-center gap-2">
+                            <span class="avatar">E</span>
+                            <span>encuser</span>
+                        </a>
+                    </li>
+                    <li><a href="/TravelRating/user/logout" class="btn btn-outline btn-sm">Log Out</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Toast / Alert Messages -->
+    
+    
+
 <main>
     <!-- Detail Hero Image -->
     <div class="container" style="padding-top:var(--space-8);">
         <div class="detail-hero reveal">
-            <img src="<%= destination.getImage() != null ? destination.getImage() : "https://picsum.photos/seed/dest" + destId + "/1200/600" %>"
-                 alt="<%= destination.getName() %>"
-                 onerror="this.src='https://picsum.photos/seed/<%= destination.getName() %>/1200/600'">
+            <img src="https://qimgs.qunarzz.com/piao_qsight_provider_piao_qsight_web/0101p1200087cum179214.jpg_710x360_6d297f16.jpg"
+                 alt="黄山风景区"
+                 onerror="this.src='https://picsum.photos/seed/黄山风景区/1200/600'">
         </div>
     </div>
 
@@ -51,51 +67,71 @@
                 <!-- Main Content -->
                 <div>
                     <div class="flex items-center gap-4 mb-4">
-                        <span class="tag tag-green"><%= destination.getType() %></span>
-                        <span class="tag tag-blue"><%= destination.getRegion() %></span>
+                        <span class="tag tag-green">自然风光</span>
+                        <span class="tag tag-blue">华东</span>
                     </div>
-                    <h1><%= destination.getName() %></h1>
+                    <h1>黄山风景区</h1>
 
                     <!-- ★ Star Rating Section ★ -->
                     <div class="rating-section reveal" style="margin-top:var(--space-5);">
                         <div class="rating-overview">
                             <div class="rating-stars-large" id="rating-display">
-                                <span class="rating-number"><%= String.format("%.1f", avgRating) %></span>
+                                <span class="rating-number">0.0</span>
                                 <div class="stars-display">
-                                    <% for (int i = 1; i <= 5; i++) { %>
-                                        <span class="star-display <%= (i <= Math.round(avgRating)) ? "filled" : "" %>">&#9733;</span>
-                                    <% } %>
+                                    
+                                        <span class="star-display ">&#9733;</span>
+                                    
+                                        <span class="star-display ">&#9733;</span>
+                                    
+                                        <span class="star-display ">&#9733;</span>
+                                    
+                                        <span class="star-display ">&#9733;</span>
+                                    
+                                        <span class="star-display ">&#9733;</span>
+                                    
                                 </div>
-                                <span class="rating-count">(<%= voteCount %> 人评价)</span>
+                                <span class="rating-count">(0 人评价)</span>
                             </div>
 
                             <!-- Interactive Star Rating -->
-                            <% if (detailCurrentUser != null) { %>
+                            
                             <div class="rating-interactive" id="rating-interactive">
-                                <span class="rating-label"><%= hasVoted ? "你的评分：" : "给个评分：" %></span>
+                                <span class="rating-label">给个评分：</span>
                                 <div class="stars-interactive" id="stars-interactive"
-                                     data-destination-id="<%= destId %>"
-                                     data-user-score="<%= userScore %>">
-                                    <% for (int i = 1; i <= 5; i++) { %>
-                                        <button class="star-btn <%= (i <= userScore) ? "active" : "" %>"
-                                                data-star="<%= i %>"
-                                                aria-label="<%= i %> 星">&#9733;</button>
-                                    <% } %>
+                                     data-destination-id="1"
+                                     data-user-score="0">
+                                    
+                                        <button class="star-btn "
+                                                data-star="1"
+                                                aria-label="1 星">&#9733;</button>
+                                    
+                                        <button class="star-btn "
+                                                data-star="2"
+                                                aria-label="2 星">&#9733;</button>
+                                    
+                                        <button class="star-btn "
+                                                data-star="3"
+                                                aria-label="3 星">&#9733;</button>
+                                    
+                                        <button class="star-btn "
+                                                data-star="4"
+                                                aria-label="4 星">&#9733;</button>
+                                    
+                                        <button class="star-btn "
+                                                data-star="5"
+                                                aria-label="5 星">&#9733;</button>
+                                    
                                 </div>
                                 <span class="rating-hint" id="rating-hint">
-                                    <%= hasVoted ? "（点击可修改评分）" : "（点击星星进行评分）" %>
+                                    （点击星星进行评分）
                                 </span>
                             </div>
-                            <% } else { %>
-                            <div class="rating-login-hint">
-                                <a href="<%=contextPath%>/login.jsp">登录</a> 后即可评分
-                            </div>
-                            <% } %>
+                            
                         </div>
                     </div>
 
                     <div style="margin-top:var(--space-6);">
-                        <p style="font-size:var(--text-lg);color:var(--color-text-secondary);"><%= destination.getDescription() %></p>
+                        <p style="font-size:var(--text-lg);color:var(--color-text-secondary);">黄山以奇松、怪石、云海、温泉四绝闻名于世，被誉为天下第一奇山。</p>
                     </div>
                 </div>
 
@@ -105,29 +141,29 @@
                         <div class="card-body" style="padding:var(--space-6);">
                             <h4 style="margin-bottom:var(--space-4);">Location Info</h4>
 
-                            <% if (destination.getAddress() != null && !destination.getAddress().isEmpty()) { %>
+                            
                             <div class="detail-info-item">
                                 <div>
                                     <div class="detail-info-label">Address</div>
-                                    <div class="detail-info-value"><%= destination.getAddress() %></div>
+                                    <div class="detail-info-value">安徽省黄山市黄山区</div>
                                 </div>
                             </div>
-                            <% } %>
+                            
 
-                            <% if (destination.getOpenTime() != null && !destination.getOpenTime().isEmpty()) { %>
+                            
                             <div class="detail-info-item">
                                 <div>
                                     <div class="detail-info-label">Open Hours</div>
-                                    <div class="detail-info-value"><%= destination.getOpenTime() %></div>
+                                    <div class="detail-info-value">06:00-17:00</div>
                                 </div>
                             </div>
-                            <% } %>
+                            
 
                             <div class="detail-info-item">
                                 <div>
                                     <div class="detail-info-label">Ticket Price</div>
                                     <div class="detail-info-value" style="color:var(--color-accent);font-weight:600;">
-                                        <%= destination.getTicketPriceDisplay() %>
+                                        ¥190
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +171,7 @@
                             <div class="detail-info-item">
                                 <div>
                                     <div class="detail-info-label">Popularity</div>
-                                    <div class="detail-info-value"><%= destination.getPopularity() %> visits</div>
+                                    <div class="detail-info-value">983 visits</div>
                                 </div>
                             </div>
                         </div>
@@ -149,14 +185,14 @@
     <section class="section" style="background:var(--color-surface);border-top:1px solid var(--color-border);">
         <div class="container">
             <div class="section-header">
-                <h2>评价与留言 (<%= comments.size() %>)</h2>
+                <h2>评价与留言 (1)</h2>
                 <p>看看其他游客怎么说，也留下你的评价吧。</p>
             </div>
 
             <!-- Comment Form -->
-            <% if (currentUser != null) { %>
-            <form action="<%=contextPath%>/comment" method="post" accept-charset="UTF-8" class="comment-form reveal" style="margin-bottom:var(--space-8);">
-                <input type="hidden" name="destinationId" value="<%= destId %>">
+            
+            <form action="/TravelRating/comment" method="post" accept-charset="UTF-8" class="comment-form reveal" style="margin-bottom:var(--space-8);">
+                <input type="hidden" name="destinationId" value="1">
                 <input type="hidden" name="rating" value="5">
                 <div class="form-group">
                     <label class="form-label" for="commentContent">写评价</label>
@@ -165,45 +201,36 @@
                 </div>
                 <button type="submit" class="btn btn-primary">提交评价</button>
             </form>
-            <% } else { %>
-                <div class="alert alert-info reveal" style="margin-bottom:var(--space-8);">
-                    请 <a href="<%=contextPath%>/login.jsp">登录</a> 后发表评价。
-                </div>
-            <% } %>
+            
 
             <!-- Comment List -->
             <div class="comment-list">
-                <% if (comments.isEmpty()) { %>
-                    <div class="empty-state reveal">
-                        <p>还没有评价，快来成为第一个分享体验的人吧！</p>
-                    </div>
-                <% } else { %>
-                    <% for (Comment c : comments) { %>
-                    <div class="comment-item reveal" id="comment-<%= c.getId() %>">
+                
+                    
+                    <div class="comment-item reveal" id="comment-1">
                         <div class="comment-header">
-                            <span class="comment-avatar"><%= c.getInitial() %></span>
+                            <span class="comment-avatar">E</span>
                             <div style="flex:1;">
-                                <div class="comment-author"><%= c.getUsername() != null ? c.getUsername() : "User" %></div>
+                                <div class="comment-author">encuser</div>
                                 <div class="comment-time">
-                                    <%= c.getCreatedAt() != null ? c.getCreatedAt().toString().substring(0, 10) : "" %>
+                                    2026-07-08
                                 </div>
                             </div>
-                            <%-- Delete button: visible to comment author or admin --%>
-                            <% if (detailCurrentUser != null &&
-                                  (detailCurrentUser.isAdmin() || detailCurrentUser.getId() == c.getUserId())) { %>
-                            <form action="<%=contextPath%>/comment" method="post"
+                            
+                            
+                            <form action="/TravelRating/comment" method="post"
                                   onsubmit="return confirm('确定要删除这条评论吗？');" style="margin:0;">
                                 <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="commentId" value="<%= c.getId() %>">
-                                <input type="hidden" name="destinationId" value="<%= destId %>">
+                                <input type="hidden" name="commentId" value="1">
+                                <input type="hidden" name="destinationId" value="1">
                                 <button type="submit" class="comment-delete-btn" title="删除评论" aria-label="删除评论">&times;</button>
                             </form>
-                            <% } %>
+                            
                         </div>
-                        <div class="comment-body"><%= c.getContent() %></div>
+                        <div class="comment-body">��ɽ�羰����̫���ˣ��ƺ��ճ������𺳣������Ƽ�</div>
                     </div>
-                    <% } %>
-                <% } %>
+                    
+                
             </div>
         </div>
     </section>
@@ -252,7 +279,7 @@
         formData.append('destinationId', destId);
         formData.append('score', score);
 
-        fetch('<%=contextPath%>/vote', {
+        fetch('/TravelRating/vote', {
             method: 'POST',
             body: new URLSearchParams({
                 destinationId: destId,
@@ -344,4 +371,26 @@ function showToast(msg) {
 }
 </script>
 
-<%@ include file="../footer.jsp" %>
+
+    </div><!-- close .container from header or main content -->
+</main>
+
+<!-- Footer - Taste-Skill: 1px border-top, clean minimal -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <span class="footer-brand">&copy; 2026 TravelVote. Built with Taste-Skill design system.</span>
+            <ul class="footer-links">
+                <li><a href="/TravelRating/">Home</a></li>
+                <li><a href="/TravelRating/destination/list.jsp">Destinations</a></li>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<script src="/TravelRating/js/main.js"></script>
+</body>
+</html>
+

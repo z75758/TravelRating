@@ -18,6 +18,10 @@ public class CommentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
+        // ★ CRITICAL: Set encoding BEFORE any getParameter() call
+        // This is a safety net in case the EncodingFilter hasn't run yet
+        req.setCharacterEncoding("UTF-8");
+
         HttpSession session = req.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 

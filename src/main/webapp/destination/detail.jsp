@@ -32,39 +32,17 @@
     double avgRating = vs.getAverageScore(destId);
     boolean hasVoted = (detailCurrentUser != null) && vs.hasVoted(detailCurrentUser.getId(), destId);
     int userScore = hasVoted ? vs.getUserScore(detailCurrentUser.getId(), destId) : 0;
-
-    // Hero background images (use 5 destinations)
-    DestinationService bgDs = new DestinationService();
-    List<Destination> allDestinations = bgDs.getAll();
-    String[] detailHeroImages = new String[5];
-    int detailImgCount = 0;
-    for (Destination d : allDestinations) {
-        if (detailImgCount >= 5) break;
-        String img = d.getImage();
-        if (img != null && !img.isEmpty()) {
-            detailHeroImages[detailImgCount++] = img;
-        }
-    }
 %>
 <%@ include file="../header.jsp" %>
 <main>
-    <!-- Detail Hero with rotating background -->
-    <section class="hero">
-        <div class="hero-bg-slider" id="heroBgSlider">
-            <% for (int i = 0; i < detailImgCount; i++) { %>
-            <div class="hero-bg-slide <%= (i == 0) ? "active" : "" %>"
-                 style="background-image: url('<%= detailHeroImages[i] %>');"></div>
-            <% } %>
+    <!-- Detail Hero Image -->
+    <div class="container" style="padding-top:var(--space-8);">
+        <div class="detail-hero reveal">
+            <img src="<%= destination.getImage() != null ? destination.getImage() : "https://picsum.photos/seed/dest" + destId + "/1200/600" %>"
+                 alt="<%= destination.getName() %>"
+                 onerror="this.src='https://picsum.photos/seed/<%= destination.getName() %>/1200/600'">
         </div>
-        <div class="hero-overlay"></div>
-        <div class="container">
-            <div class="detail-hero reveal">
-                <img src="<%= destination.getImage() != null ? destination.getImage() : "https://picsum.photos/seed/dest" + destId + "/1200/600" %>"
-                     alt="<%= destination.getName() %>"
-                     onerror="this.src='https://picsum.photos/seed/<%= destination.getName() %>/1200/600'">
-            </div>
-        </div>
-    </section>
+    </div>
 
     <!-- Detail Content -->
     <section class="section" style="padding-top:0;">

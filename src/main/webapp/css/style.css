@@ -208,17 +208,18 @@ a:hover {
   opacity: 1;
 }
 
-/* White feather overlay: fades image to white from left to right */
+/* White feather overlay: fades image to white from bottom-left to top-right (wide gradient) */
 .hero-overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   background: linear-gradient(
-    to right,
+    to top right,
     rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 0.92) 25%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0.12) 75%,
+    rgba(255, 255, 255, 0.95) 30%,
+    rgba(255, 255, 255, 0.75) 55%,
+    rgba(255, 255, 255, 0.35) 75%,
+    rgba(255, 255, 255, 0.08) 90%,
     rgba(255, 255, 255, 0) 100%
   );
   pointer-events: none;

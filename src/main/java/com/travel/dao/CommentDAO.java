@@ -33,13 +33,14 @@ public class CommentDAO {
     }
 
     public boolean create(Comment comment) {
-        String sql = "INSERT INTO comments (destination_id, user_id, content, rating) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO comments (destination_id, user_id, content, rating, image) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, comment.getDestinationId());
             stmt.setInt(2, comment.getUserId());
             stmt.setString(3, comment.getContent());
             stmt.setInt(4, comment.getRating());
+            stmt.setString(5, comment.getImage());
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -108,6 +109,7 @@ public class CommentDAO {
         c.setUserId(rs.getInt("user_id"));
         c.setContent(rs.getString("content"));
         c.setRating(rs.getInt("rating"));
+        c.setImage(rs.getString("image"));
         c.setCreatedAt(rs.getTimestamp("created_at"));
         try {
             c.setUsername(rs.getString("username"));

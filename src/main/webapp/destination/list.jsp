@@ -19,13 +19,32 @@
 
     List<String> regions = ds.getAllRegions();
     List<String> types = ds.getAllTypes();
+
+    // Hero background images (use first 5 destinations)
+    List<Destination> allDests = ds.getAll();
+    String[] heroImages = new String[5];
+    int imgCount = 0;
+    for (Destination d : allDests) {
+        if (imgCount >= 5) break;
+        String img = d.getImage();
+        if (img != null && !img.isEmpty()) {
+            heroImages[imgCount++] = img;
+        }
+    }
 %>
 <%@ include file="../header.jsp" %>
 <main>
-    <!-- Page Header -->
-    <section class="hero" style="padding:var(--space-10) 0 var(--space-6);">
+    <!-- Page Header with rotating background -->
+    <section class="hero">
+        <div class="hero-bg-slider" id="heroBgSlider">
+            <% for (int i = 0; i < imgCount; i++) { %>
+            <div class="hero-bg-slide <%= (i == 0) ? "active" : "" %>"
+                 style="background-image: url('<%= heroImages[i] %>');"></div>
+            <% } %>
+        </div>
+        <div class="hero-overlay"></div>
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" style="margin:0;">
                 <h2>All Destinations</h2>
                 <p>Browse, search, and discover your next adventure.</p>
             </div>
@@ -120,4 +139,17 @@
         </div>
     </section>
 </main>
+<!-- Hero background rotation -->
+<script>
+(function() {
+    var slides = document.querySelectorAll('.hero-bg-slide');
+    if (slides.length < 2) return;
+    var current = 0;
+    setInterval(function() {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+    }, 30000);
+})();
+</script>
 <%@ include file="../footer.jsp" %>

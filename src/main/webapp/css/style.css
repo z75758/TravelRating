@@ -180,6 +180,54 @@ a:hover {
 .hero {
   padding: var(--space-16) 0 var(--space-20);
   background: var(--color-canvas);
+  position: relative;
+  overflow: hidden;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Hero Background Slider ── */
+.hero-bg-slider {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.8s ease-in-out;
+}
+
+.hero-bg-slide.active {
+  opacity: 1;
+}
+
+/* White feather overlay: fades image to white from left to right */
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.92) 25%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0.12) 75%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+/* Ensure hero content sits above the background */
+.hero .container {
+  position: relative;
+  z-index: 2;
 }
 
 .hero-content {
@@ -898,6 +946,7 @@ select.form-input {
 
   .hero {
     padding: var(--space-10) 0 var(--space-12);
+    min-height: 380px;
   }
 
   .grid-2, .grid-3, .grid-4 {
@@ -1118,4 +1167,84 @@ select.form-input {
   color: #E53E3E;
   transform: scale(1.2);
   background: #FFF5F5;
+}
+
+/* ---------- Comment Image Upload ---------- */
+.comment-image-upload {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+.comment-file-input {
+  display: none;
+}
+.comment-file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  transition: border-color 0.2s, color 0.2s;
+  user-select: none;
+}
+.comment-file-label:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.comment-file-label span:first-child {
+  font-size: 18px;
+  font-weight: 600;
+}
+.comment-image-preview {
+  max-width: 120px;
+  max-height: 80px;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+.comment-remove-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  background: #E53E3E;
+  color: #FFF;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+.comment-remove-image:hover {
+  transform: scale(1.15);
+}
+
+/* ---------- Comment Image Display ---------- */
+.comment-image {
+  margin-top: var(--space-3);
+}
+.comment-image img {
+  max-width: 280px;
+  max-height: 200px;
+  border-radius: var(--radius-md);
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+  transition: transform 0.2s;
+}
+.comment-image img:hover {
+  transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+  .comment-image img {
+    max-width: 100%;
+    max-height: 180px;
+  }
 }

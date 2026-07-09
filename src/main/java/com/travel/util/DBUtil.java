@@ -99,6 +99,7 @@ public class DBUtil {
                 "  user_id INT NOT NULL," +
                 "  content TEXT NOT NULL," +
                 "  rating INT DEFAULT 5," +
+                "  image VARCHAR(255) DEFAULT NULL," +
                 "  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                 "  FOREIGN KEY (destination_id) REFERENCES destinations(id) ON DELETE CASCADE," +
                 "  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE" +

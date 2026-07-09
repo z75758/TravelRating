@@ -12,6 +12,7 @@ public class Comment {
     private int userId;
     private String content;
     private int rating;   // 1-5
+    private String image; // optional uploaded image path
     private Timestamp createdAt;
 
     // Joined fields
@@ -34,6 +35,9 @@ public class Comment {
 
     public int getRating() { return rating; }
     public void setRating(int rating) { this.rating = rating; }
+
+    public String getImage() { return image; }
+    public void setImage(String image) { this.image = image; }
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }

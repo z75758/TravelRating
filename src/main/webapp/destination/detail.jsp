@@ -32,17 +32,39 @@
     double avgRating = vs.getAverageScore(destId);
     boolean hasVoted = (detailCurrentUser != null) && vs.hasVoted(detailCurrentUser.getId(), destId);
     int userScore = hasVoted ? vs.getUserScore(detailCurrentUser.getId(), destId) : 0;
+
+    // Hero background images (use 5 destinations)
+    DestinationService bgDs = new DestinationService();
+    List<Destination> allDestinations = bgDs.getAll();
+    String[] detailHeroImages = new String[5];
+    int detailImgCount = 0;
+    for (Destination d : allDestinations) {
+        if (detailImgCount >= 5) break;
+        String img = d.getImage();
+        if (img != null && !img.isEmpty()) {
+            detailHeroImages[detailImgCount++] = img;
+        }
+    }
 %>
 <%@ include file="../header.jsp" %>
 <main>
-    <!-- Detail Hero Image -->
-    <div class="container" style="padding-top:var(--space-8);">
-        <div class="detail-hero reveal">
-            <img src="<%= destination.getImage() != null ? destination.getImage() : "https://picsum.photos/seed/dest" + destId + "/1200/600" %>"
-                 alt="<%= destination.getName() %>"
-                 onerror="this.src='https://picsum.photos/seed/<%= destination.getName() %>/1200/600'">
+    <!-- Detail Hero with rotating background -->
+    <section class="hero">
+        <div class="hero-bg-slider" id="heroBgSlider">
+            <% for (int i = 0; i < detailImgCount; i++) { %>
+            <div class="hero-bg-slide <%= (i == 0) ? "active" : "" %>"
+                 style="background-image: url('<%= detailHeroImages[i] %>');"></div>
+            <% } %>
         </div>
-    </div>
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="detail-hero reveal">
+                <img src="<%= destination.getImage() != null ? destination.getImage() : "https://picsum.photos/seed/dest" + destId + "/1200/600" %>"
+                     alt="<%= destination.getName() %>"
+                     onerror="this.src='https://picsum.photos/seed/<%= destination.getName() %>/1200/600'">
+            </div>
+        </div>
+    </section>
 
     <!-- Detail Content -->
     <section class="section" style="padding-top:0;">
@@ -155,13 +177,29 @@
 
             <!-- Comment Form -->
             <% if (currentUser != null) { %>
-            <form action="<%=contextPath%>/comment" method="post" accept-charset="UTF-8" class="comment-form reveal" style="margin-bottom:var(--space-8);">
+            <form action="<%=contextPath%>/comment" method="post" accept-charset="UTF-8"
+                  enctype="multipart/form-data" class="comment-form reveal" style="margin-bottom:var(--space-8);">
                 <input type="hidden" name="destinationId" value="<%= destId %>">
                 <input type="hidden" name="rating" value="5">
                 <div class="form-group">
                     <label class="form-label" for="commentContent">写评价</label>
                     <textarea id="commentContent" name="content" class="form-input"
                               placeholder="分享你在这个地方的旅行体验..." rows="4" required></textarea>
+                </div>
+                <!-- Image upload -->
+                <div class="form-group">
+                    <label class="form-label">上传图片（可选）</label>
+                    <div class="comment-image-upload">
+                        <input type="file" id="commentImage" name="image" accept="image/*"
+                               class="comment-file-input" onchange="previewCommentImage(this)">
+                        <label for="commentImage" class="comment-file-label">
+                            <span id="uploadIcon">+</span>
+                            <span id="uploadText">添加旅行照片</span>
+                        </label>
+                        <img id="commentImagePreview" class="comment-image-preview" style="display:none;" alt="预览">
+                        <button type="button" id="removeImageBtn" class="comment-remove-image" style="display:none;"
+                                onclick="removeCommentImage()" title="移除图片">&times;</button>
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">提交评价</button>
             </form>
@@ -201,6 +239,14 @@
                             <% } %>
                         </div>
                         <div class="comment-body"><%= c.getContent() %></div>
+                        <%-- Display uploaded image if present --%>
+                        <% if (c.getImage() != null && !c.getImage().isEmpty()) { %>
+                        <div class="comment-image">
+                            <img src="<%= c.getImage() %>" alt="评论图片"
+                                 onclick="window.open(this.src)" style="cursor:pointer;"
+                                 loading="lazy">
+                        </div>
+                        <% } %>
                     </div>
                     <% } %>
                 <% } %>
@@ -331,6 +377,50 @@
             submitRating(score);
         });
     });
+})();
+
+/* ===== Comment Image Upload Preview ===== */
+function previewCommentImage(input) {
+    var preview = document.getElementById('commentImagePreview');
+    var icon = document.getElementById('uploadIcon');
+    var text = document.getElementById('uploadText');
+    var removeBtn = document.getElementById('removeImageBtn');
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            icon.style.display = 'none';
+            text.textContent = input.files[0].name;
+            removeBtn.style.display = 'flex';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+function removeCommentImage() {
+    var input = document.getElementById('commentImage');
+    var preview = document.getElementById('commentImagePreview');
+    var icon = document.getElementById('uploadIcon');
+    var text = document.getElementById('uploadText');
+    var removeBtn = document.getElementById('removeImageBtn');
+    input.value = '';
+    preview.src = '';
+    preview.style.display = 'none';
+    icon.style.display = 'inline';
+    text.textContent = '添加旅行照片';
+    removeBtn.style.display = 'none';
+}
+
+/* ===== Hero Background Rotation ===== */
+(function() {
+    var slides = document.querySelectorAll('.hero-bg-slide');
+    if (slides.length < 2) return;
+    var current = 0;
+    setInterval(function() {
+        slides[current].classList.remove('active');
+        current = (current + 1) % slides.length;
+        slides[current].classList.add('active');
+    }, 30000);
 })();
 
 /* ===== Toast Notification ===== */

@@ -5,13 +5,35 @@
 <%
     DestinationService destinationService = new DestinationService();
     List<Destination> topDestinations = destinationService.getTop(6);
+    List<Destination> allDests = destinationService.getAll();
     List<String> regions = destinationService.getAllRegions();
     List<String> types = destinationService.getAllTypes();
+
+    // Collect background images for hero slider (use first 5 scenic destinations)
+    String[] heroImages = new String[5];
+    int imgCount = 0;
+    for (Destination d : allDests) {
+        if (imgCount >= 5) break;
+        String img = d.getImage();
+        if (img != null && !img.isEmpty()) {
+            heroImages[imgCount++] = img;
+        }
+    }
 %>
 <%@ include file="header.jsp" %>
 <main>
     <!-- Hero Section - Taste-Skill: 标题≤2行，副文≤20词 -->
     <section class="hero">
+        <!-- Rotating background images with left-to-right feather mask -->
+        <div class="hero-bg-slider" id="heroBgSlider">
+            <% for (int i = 0; i < imgCount; i++) { %>
+            <div class="hero-bg-slide <%= (i == 0) ? "active" : "" %>"
+                 style="background-image: url('<%= heroImages[i] %>');"
+                 data-index="<%= i %>"></div>
+            <% } %>
+        </div>
+        <!-- Gradient overlay: dark left side for text readability, transparent right -->
+        <div class="hero-overlay"></div>
         <div class="container">
             <div class="hero-content">
                 <h1>Discover the world,<br>one destination at a time.</h1>
@@ -119,4 +141,27 @@
         </div>
     </section>
 </main>
+<!-- Hero background rotation script: 30s interval with crossfade -->
+<script>
+(function() {
+    var slides = document.querySelectorAll('.hero-bg-slide');
+    if (slides.length < 2) return;
+
+    var current = 0;
+    var total = slides.length;
+    var interval = 30000; // 30 seconds
+
+    function nextSlide() {
+        // Remove active from current
+        slides[current].classList.remove('active');
+        // Advance to next (loop)
+        current = (current + 1) % total;
+        // Add active to next (triggers CSS crossfade)
+        slides[current].classList.add('active');
+    }
+
+    // Start rotation
+    setInterval(nextSlide, interval);
+})();
+</script>
 <%@ include file="footer.jsp" %>

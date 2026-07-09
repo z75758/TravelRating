@@ -16,7 +16,7 @@ public class CommentService {
         return commentDAO.findByDestinationId(destinationId);
     }
 
-    public boolean addComment(int destinationId, int userId, String content, int rating) {
+    public boolean addComment(int destinationId, int userId, String content, int rating, String image) {
         if (content == null || content.trim().isEmpty()) {
             return false;
         }
@@ -28,6 +28,7 @@ public class CommentService {
         c.setUserId(userId);
         c.setContent(content.trim());
         c.setRating(rating);
+        c.setImage(image);
 
         return commentDAO.create(c);
     }
